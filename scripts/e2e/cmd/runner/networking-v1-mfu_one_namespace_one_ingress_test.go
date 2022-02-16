@@ -483,31 +483,32 @@ var _ = Describe("networking-v1-MFU", func() {
 			klog.Info("Applying empty secret yaml: ", yamlPath)
 			err = applyYaml(clientset, namespaceName, yamlPath)
 			Expect(err).To(BeNil())
-			time.Sleep(30 * time.Second)
+			time.Sleep(10 * time.Second)
 
 			// get ip address for 1 ingress
 			klog.Info("Getting public IP from Ingress...")
 			publicIP, _ := getPublicIP(clientset, namespaceName)
 			Expect(publicIP).ToNot(Equal(""))
 
-			urlHttps := fmt.Sprintf("https://%s", publicIP)
+			urlHttps := fmt.Sprintf("http://%s", publicIP)
 
-			respondedWithColor := func(path string) string {
-				resp, err := makeGetRequest(urlHttps+"/prefix", "example.com", 200, true)
+			respondedWithColor := func(path string, body string) {
+				resp, err := makeGetRequest(urlHttps+path, "example.com", 200, true)
+				Expect(readBody(resp)).To(ContainSubstring(body))
 				Expect(err).To(BeNil())
 			}
 
 			// PathType:Prefix
-			Expect(respondedWithColor("/prefix").To(Equal("green"))
-			Expect(respondedWithColor("/prefixA").To(Equal("green"))
+			respondedWithColor("/prefix", "correct-app")
+			respondedWithColor("/prefixSuffix", "correct-app")
 
 			// PathType:Exact
-			Expect(respondedWithColor("/exact").To(Equal("green"))
-			Expect(respondedWithColor("/exactA").To(Equal("red"))
+			respondedWithColor("/exact", "correct-app")
+			respondedWithColor("/exact/asd", "catch-all")
 
 			// PathType:ImplementationSpecific
-			Expect(respondedWithColor("/ims").To(Equal("green"))
-			Expect(respondedWithColor("/ims").To(Equal("green"))
+			respondedWithColor("/ims", "correct-app")
+			respondedWithColor("/imsSuffix", "correct-app")
 		})
 
 		AfterEach(func() {

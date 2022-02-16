@@ -9,7 +9,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	r "github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	n "github.com/Azure/azure-sdk-for-go/services/network/mgmt/2021-03-01/network"
@@ -79,11 +78,6 @@ func NewAzClient(subscriptionID SubscriptionID, resourceGroupName ResourceGroup,
 
 		ctx: context.Background(),
 	}
-
-	az.appGatewaysClient.RetryDuration = time.Second
-	az.appGatewaysClient.RetryAttempts = 2
-	az.appGatewaysClient.PollingDelay = time.Second
-	az.appGatewaysClient.PollingDuration = time.Second
 
 	if err := az.appGatewaysClient.AddToUserAgent(userAgent); err != nil {
 		klog.Error("Error adding User Agent to App Gateway client: ", userAgent)

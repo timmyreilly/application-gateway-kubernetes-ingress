@@ -1,0 +1,33 @@
+[#1332](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1332) Merge master into release/1.5
+[#1324](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1324) add makefile; multi-arch images (#1307)
+[#1282](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1282) fix: modify cloned ingress instead of original ingress
+[#1278](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1278) fix(prohibited target): incorrect merge when rules being merged reference the same path map 
+[#1271](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1271) fix: update AAD and Azure endpoints using Cloud from cpConfig
+[#1274](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1274) fix: update azure sdk version in e2e code
+[#1273](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1273) fix: panic when processing duplicate paths in urlpathmap
+[#1272](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1272) fix: add type: object and add api-approved
+[#1266](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1266) azure: Small correction to docstrings of functions
+[#1265](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1265) rename azureapplicationgatewayloaddistributionpolicies to loaddistributionpolicies
+[#1264](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1264) chore: update azure go sdk to 2021-03-01
+[#1220](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1220) crd: Upgrade prohibited target CRD api-version and add tests
+[#1252](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1252) Extending path rewrite documentation
+[#1232](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1232) e2e: increase the timeout to 240m as tests have doubled
+[#1246](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1246) Change default kubernetesVersion to 1.20.7
+[#1245](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1245) (feature) Integration with MultiCluster CRDs
+[#1244](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1244) (crd) MultiClusterIngress + MultiClusterService CRD base files + codegen
+[#1230](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1230) Update continuous-deployment.md
+[#1213](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1213) e2e: update e2e test with new packages
+[#1219](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1219) crd: Add load distribution policy crd and generated client code
+[#1217](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1217) fix: conversion from extensions/v1beta1 to networking/v1 logic
+[#1214](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1214) fix: correct version for ingress v1
+[#1212](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1212) fix: update clusterrole yaml for v1 networking api
+[#1207](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1207) chore: run gofmt and spellcheck; fix style issues
+[#1206](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1206) chore: refresh go.mod to use go1.16 and latest packages
+[#1205](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1205) chore: remove vendor files
+[#1197](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1197) Upgrades from Ingress API from extensions/v1beta1 to networking.k8s.io/v1
+[#1169](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1169) Add helm config for resource quota on agic pod
+[#1163](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1163) Updated --out test.pfx to test-cert.pfx
+[#1158](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1158) Update azuredeploy.json
+[#1160](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1160) Update annotations.md
+
+[#1150](https://github.com/Azure/application-gateway-kubernetes-ingress/pull/1150) chore: update azure go version

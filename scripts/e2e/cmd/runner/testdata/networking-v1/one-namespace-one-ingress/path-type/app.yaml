@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catch-all
+data:
+  default.conf: |-
+    server {
+        listen 80 default_server;
+        location / {
+          return 200 "catch-all";
+        }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,11 +26,19 @@ spec:
         app: catch-all
     spec:
       containers:
-        - name: catch-all
-          imagePullPolicy: Always
-          image: gcr.io/kuar-demo/kuard-amd64:blue
-          ports:
-            - containerPort: 80
+      - name: nginx
+        imagePullPolicy: Always
+        image: nginx:latest
+        ports:
+          - containerPort: 80
+            name: http
+        volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: configmap-volume
+      volumes:
+      - name: configmap-volume
+        configMap:
+          name: catch-all
 ---
 apiVersion: v1
 kind: Service
@@ -31,38 +52,59 @@ spec:
       port: 80
       targetPort: 80
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: correct-app
+data:
+  default.conf: |-
+    server {
+        listen 80 default_server;
+        location / {
+          return 200 "correct-app";
+        }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: should-get-request
+  name: correct-app
 spec:
   selector:
     matchLabels:
-      app: should-get-request
+      app: correct-app
   replicas: 1
   template:
     metadata:
       labels:
-        app: should-get-request
+        app: correct-app
     spec:
       containers:
-        - name: should-get-request
-          imagePullPolicy: Always
-          image: gcr.io/kuar-demo/kuard-amd64:green
-          ports:
-            - containerPort: 8080
+      - name: nginx
+        imagePullPolicy: Always
+        image: nginx:latest
+        ports:
+          - containerPort: 80
+            name: http
+        volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: configmap-volume
+      volumes:
+      - name: configmap-volume
+        configMap:
+          name: correct-app
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: should-get-request
+  name: correct-app
 spec:
   selector:
-    app: should-get-request
+    app: correct-app
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -70,6 +112,7 @@ metadata:
   name: ingress
   annotations:
     kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/health-probe-path: /
 spec:
   rules:
     - host: example.com
@@ -85,42 +128,42 @@ spec:
           - path: /prefix
             backend:
               service:
-                name: should-get-request
+                name: correct-app
                 port:
                   number: 80
             pathType: Prefix
           - path: /prefix*
             backend:
               service:
-                name: should-get-request
+                name: correct-app
                 port:
                   number: 80
             pathType: Prefix
           - path: /exact
             backend:
               service:
-                name: should-get-request
+                name: correct-app
                 port:
                   number: 80
             pathType: Exact
           - path: /exact*
             backend:
               service:
-                name: should-get-request
+                name: correct-app
                 port:
                   number: 80
             pathType: Exact
           - path: /ims
             backend:
               service:
-                name: should-get-request
+                name: correct-app
                 port:
                   number: 80
             pathType: ImplementationSpecific
           - path: /ims*
             backend:
               service:
-                name: should-get-request
+                name: correct-app
                 port:
                   number: 80
             pathType: ImplementationSpecific
