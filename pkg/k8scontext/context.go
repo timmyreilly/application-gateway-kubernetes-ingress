@@ -76,7 +76,6 @@ func NewContext(kubeClient kubernetes.Interface, crdClient versioned.Interface, 
 
 	if IsNetworkingV1PackageSupported {
 		informerCollection.Ingress = informerFactory.Networking().V1().Ingresses().Informer()
-		informerCollection.IngressClass = informerFactory.Networking().V1().IngressClasses().Informer()
 	} else {
 		informerCollection.Ingress = informerFactory.Extensions().V1beta1().Ingresses().Informer()
 	}
@@ -84,7 +83,6 @@ func NewContext(kubeClient kubernetes.Interface, crdClient versioned.Interface, 
 	cacheCollection := CacheCollection{
 		Endpoints:                          informerCollection.Endpoints.GetStore(),
 		Ingress:                            informerCollection.Ingress.GetStore(),
-		IngressClass:                       informerCollection.IngressClass.GetStore(),
 		Pods:                               informerCollection.Pods.GetStore(),
 		Secret:                             informerCollection.Secret.GetStore(),
 		Service:                            informerCollection.Service.GetStore(),
@@ -146,7 +144,6 @@ func NewContext(kubeClient kubernetes.Interface, crdClient versioned.Interface, 
 	// Register event handlers.
 	informerCollection.Endpoints.AddEventHandler(resourceHandler)
 	informerCollection.Ingress.AddEventHandler(ingressResourceHandler)
-	informerCollection.IngressClass.AddEventHandler(resourceHandler)
 	informerCollection.Pods.AddEventHandler(resourceHandler)
 	informerCollection.Secret.AddEventHandler(secretResourceHandler)
 	informerCollection.Service.AddEventHandler(resourceHandler)
@@ -155,6 +152,12 @@ func NewContext(kubeClient kubernetes.Interface, crdClient versioned.Interface, 
 	informerCollection.AzureApplicationGatewayInstanceUpdateStatus.AddEventHandler(resourceHandler)
 	informerCollection.MultiClusterService.AddEventHandler(resourceHandler)
 	informerCollection.MultiClusterIngress.AddEventHandler(resourceHandler)
+
+	if IsNetworkingV1PackageSupported {
+		informerCollection.IngressClass = informerFactory.Networking().V1().IngressClasses().Informer()
+		informerCollection.IngressClass.AddEventHandler(resourceHandler)
+		cacheCollection.IngressClass = informerCollection.IngressClass.GetStore()
+	}
 
 	return context
 }

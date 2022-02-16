@@ -405,7 +405,7 @@ var _ = Describe("networking-v1-MFU", func() {
 		})
 
 		It("[ingress-class-resource] ingress class resource should work with ingress v1", func() {
-			namespaceName := "ingress-class-resource"
+			namespaceName := "e2e-ingress-class-resource"
 			ns := &v1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: namespaceName,
@@ -466,6 +466,48 @@ var _ = Describe("networking-v1-MFU", func() {
 			// check that rewrite rule is adding a response header "test-header: test-value"
 			testHeader := resp.Header.Get("test-header")
 			Expect(testHeader).To(Equal("test-value"))
+		})
+
+		It("[path-type] Path Type should correctly convert path to app gateway and respond correctly", func() {
+			namespaceName := "e2e-path-type"
+			ns := &v1.Namespace{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: namespaceName,
+				},
+			}
+			klog.Info("Creating namespace: ", namespaceName)
+			_, err = clientset.CoreV1().Namespaces().Create(context.TODO(), ns, metav1.CreateOptions{})
+			Expect(err).To(BeNil())
+
+			yamlPath := "testdata/networking-v1/one-namespace-one-ingress/path-type/app.yaml"
+			klog.Info("Applying empty secret yaml: ", yamlPath)
+			err = applyYaml(clientset, namespaceName, yamlPath)
+			Expect(err).To(BeNil())
+			time.Sleep(30 * time.Second)
+
+			// get ip address for 1 ingress
+			klog.Info("Getting public IP from Ingress...")
+			publicIP, _ := getPublicIP(clientset, namespaceName)
+			Expect(publicIP).ToNot(Equal(""))
+
+			urlHttps := fmt.Sprintf("https://%s", publicIP)
+
+			respondedWithColor := func(path string) string {
+				resp, err := makeGetRequest(urlHttps+"/prefix", "example.com", 200, true)
+				Expect(err).To(BeNil())
+			}
+
+			// PathType:Prefix
+			Expect(respondedWithColor("/prefix").To(Equal("green"))
+			Expect(respondedWithColor("/prefixA").To(Equal("green"))
+
+			// PathType:Exact
+			Expect(respondedWithColor("/exact").To(Equal("green"))
+			Expect(respondedWithColor("/exactA").To(Equal("red"))
+
+			// PathType:ImplementationSpecific
+			Expect(respondedWithColor("/ims").To(Equal("green"))
+			Expect(respondedWithColor("/ims").To(Equal("green"))
 		})
 
 		AfterEach(func() {
