@@ -599,7 +599,7 @@ func makeGetRequest(url string, host string, statusCode int, inSecure bool) (*ht
 	}
 	client.Timeout = 2 * time.Second
 
-	klog.Warning("Sending GET request...")
+	klog.Warningf("Sending GET request: Url='%s', Host='%s', StatusCode='%d', InSecure='%t'", url, host, statusCode, inSecure)
 	for i := 1; i <= 100; i++ {
 		resp, err := client.Do(req)
 		if err != nil {

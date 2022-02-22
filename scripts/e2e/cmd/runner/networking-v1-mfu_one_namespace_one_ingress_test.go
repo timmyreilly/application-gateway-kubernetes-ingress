@@ -448,7 +448,7 @@ var _ = Describe("networking-v1-MFU", func() {
 			Expect(err).To(BeNil())
 
 			yamlPath := "testdata/networking-v1/one-namespace-one-ingress/rewrite-rule/app.yaml"
-			klog.Info("Applying empty secret yaml: ", yamlPath)
+			klog.Info("Applying yaml: ", yamlPath)
 			err = applyYaml(clientset, namespaceName, yamlPath)
 			Expect(err).To(BeNil())
 			time.Sleep(30 * time.Second)
@@ -458,9 +458,9 @@ var _ = Describe("networking-v1-MFU", func() {
 			publicIP, _ := getPublicIP(clientset, namespaceName)
 			Expect(publicIP).ToNot(Equal(""))
 
-			urlHttps := fmt.Sprintf("https://%s", publicIP)
+			urlHttp := fmt.Sprintf("http://%s", publicIP)
 			// http get to return 200 ok
-			resp, err := makeGetRequest(urlHttps, "example.com", 200, true)
+			resp, err := makeGetRequest(urlHttp, "example.com", 200, true)
 			Expect(err).To(BeNil())
 
 			// check that rewrite rule is adding a response header "test-header: test-value"
